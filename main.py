@@ -2,6 +2,7 @@
 import multiprocessing
 import os
 import sys
+import tarfile
 import shutil
 import subprocess
 import threading
@@ -210,17 +211,37 @@ class MetricsGenerator(object):
 
 
     def generate_report_for_repository(self, folder_path, report_name="out.csv", languages="python"):
-        folders = [join(folder_path, f) for f in os.listdir(folder_path) if os.path.isdir(join(folder_path, f))]
+        folders = [f for f in os.listdir(folder_path) if f.endswith('.tar.gz')]
         # metrics_list = defaultdict(list)
         # print("Matrices list ",metrics_list)
         header_written = False
-        for folder in folders:
-            print(f"Processing: {folder}")
-            data = self.generate_metrics(folder_path=folder, languages=languages)
-            
+        for tar_file in folders:
+            tar_path = join(folder_path, tar_file)
+            extract_folder_name = tar_file.replace('.tar.gz', '')
+            extract_folder = join(folder_path, extract_folder_name)
+
+            print(f"Extracting: {tar_path}")
+            with tarfile.open(tar_path, 'r:gz') as tar:
+                tar.extractall(path=extract_folder)
+
+            print(f"Processing: {extract_folder}")
+            data = self.generate_metrics(folder_path=extract_folder, languages=languages)
+
             df = pd.DataFrame([data])
             df.to_csv(report_name, mode='a', header=not header_written, index=False)
             header_written = True
+
+            # Clean up extracted folder
+            print(f"Deleting extracted folder: {extract_folder}")
+            shutil.rmtree(extract_folder)
+
+
+            # print(f"Processing: {folder}")
+            # data = self.generate_metrics(folder_path=folder, languages=languages)
+            
+            # df = pd.DataFrame([data])
+            # df.to_csv(report_name, mode='a', header=not header_written, index=False)
+            # header_written = True
 
 
                 # metrics_list[k].append(v)
@@ -250,5 +271,6 @@ if __name__ == "__main__":
 
     # # Generate Report
     
-    MetricsGenerator(source_folder=r"D:/mahir/product specific exploit prediction/Script for zip/script for Linux zip/Test").generate_report_for_repository(r"D:/mahir/product specific exploit prediction/Script for zip/script for Linux zip/Test", r"Sylius.csv")
+    # MetricsGenerator(source_folder=r"D:/mahir/product specific exploit prediction/Script for zip/script for Linux zip/Test").generate_report_for_repository(r"D:/mahir/product specific exploit prediction/Script for zip/script for Linux zip/Test", r"Sylius.csv")
+    MetricsGenerator(source_folder=r"C:/Users/Sakib/Desktop/Matrix generation/Test").generate_report_for_repository(r"C:/Users/Sakib/Desktop/Matrix generation/Test", r"Sylius.csv")
     # MetricsGenerator(source_folder=r"D:/mahir/product specific exploit prediction/Script for zip/script for Linux zip/linux_zip_files/linux-v2.6.12").generate_metrics("D:/mahir/product specific exploit prediction/Script for zip/script for Linux zip/linux_zip_files/linux-v2.6.12")
