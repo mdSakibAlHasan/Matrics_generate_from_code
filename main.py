@@ -182,13 +182,13 @@ class MetricsGenerator(object):
             zip_ref.extractall(save_path + "\\" + str(file_name))
 
 
-    def generate_metrics(self, folder_path, languages="python"):
+    def generate_metrics(self, folder_path, languages):
         und_db_path = f"{folder_path}.und"
         output = subprocess.check_output(f'und create -languages "{languages}" -db "{und_db_path}"', shell=True)
         output2 = subprocess.check_output(f'und add -db "{und_db_path}" "{folder_path}"', shell=True)
         output3 = subprocess.check_output(f'und analyze -db "{und_db_path}"', shell=True)
-        # output3 = subprocess.check_output(f'und report -db "{und_db_path}"', shell=True)
-        # output3 = subprocess.check_output(f'und metrics -db "{und_db_path}"', shell=True)
+        output3 = subprocess.check_output(f'und report -db "{und_db_path}"', shell=True)
+        output3 = subprocess.check_output(f'und metrics -db "{und_db_path}"', shell=True)
 
         with os.add_dll_directory("C:/Program Files/SciTools/bin/pc-win64"):
             sys.path.append("C:/Program Files/SciTools/bin/pc-win64/Python")
@@ -202,19 +202,15 @@ class MetricsGenerator(object):
             shutil.rmtree(str(folder_path) + ".und")
         version_name = os.path.basename(folder_path)
         metrics["version"] = version_name
-        # import json
 
-        # with open(str(version_name)+'.json', 'w') as fp:
-            # json.dump(metrics, fp)
         print(metrics)
         return metrics
 
 
-    def generate_report_for_repository(self, folder_path, report_name="out.csv", languages="python"):
+    def generate_report_for_repository(self, folder_path, report_name="out.csv", languages="C++"):
         folders = [f for f in os.listdir(folder_path) if f.endswith('.tar.gz')]
-        # metrics_list = defaultdict(list)
-        # print("Matrices list ",metrics_list)
         header_written = False
+
         for tar_file in folders:
             tar_path = join(folder_path, tar_file)
             extract_folder_name = tar_file.replace('.tar.gz', '')
@@ -236,24 +232,6 @@ class MetricsGenerator(object):
             shutil.rmtree(extract_folder)
 
 
-            # print(f"Processing: {folder}")
-            # data = self.generate_metrics(folder_path=folder, languages=languages)
-            
-            # df = pd.DataFrame([data])
-            # df.to_csv(report_name, mode='a', header=not header_written, index=False)
-            # header_written = True
-
-
-                # metrics_list[k].append(v)
-        # print(metrics_list)
-        # df = pd.DataFrame.from_dict(metrics_list)
-        # df.to_csv(report_name, index=False)
-
-        # data_df = pd.DataFrame.from_dict(metrics_list)
-        # return metrics_list
-
-
-
 if __name__ == "__main__":
     # GithubReleaseDownloader().download_releases(repository="tiangolo/fastapi",save_path=r"C:/Users/Sakib/Desktop/Matrix generation",thread_number=5)
 
@@ -271,6 +249,6 @@ if __name__ == "__main__":
 
     # # Generate Report
     
-    # MetricsGenerator(source_folder=r"D:/mahir/product specific exploit prediction/Script for zip/script for Linux zip/Test").generate_report_for_repository(r"D:/mahir/product specific exploit prediction/Script for zip/script for Linux zip/Test", r"Sylius.csv")
-    MetricsGenerator(source_folder=r"C:/Users/Sakib/Desktop/Matrix generation/Test").generate_report_for_repository(r"C:/Users/Sakib/Desktop/Matrix generation/Test", r"Sylius.csv")
+    # MetricsGenerator(source_folder=r"D:/mahir/product specific exploit prediction/Script for zip/script for Linux zip/Test").generate_report_for_repository(r"D:/mahir/product specific exploit prediction/Script for zip/script for Linux zip/Test", r"Sylius.csv")  #MSSE lab
+    MetricsGenerator(source_folder=r"C:/Users/Sakib/Desktop/Matrix generation/Test").generate_report_for_repository(r"C:/Users/Sakib/Desktop/Matrix generation/Test", r"Sylius.csv")                #BSSE lab
     # MetricsGenerator(source_folder=r"D:/mahir/product specific exploit prediction/Script for zip/script for Linux zip/linux_zip_files/linux-v2.6.12").generate_metrics("D:/mahir/product specific exploit prediction/Script for zip/script for Linux zip/linux_zip_files/linux-v2.6.12")
