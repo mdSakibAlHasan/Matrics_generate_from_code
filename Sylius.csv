@@ -1,3 +1,1 @@
-CountDeclClass,CountDeclFile,CountDeclFunction,CountLine,CountLineBlank,CountLineCode,CountLineComment,CountStmtDecl,CountStmtExe,RatioCommentToCode,CountCCViol,CountCCViolType,CCViolDensityLine,CCViolDensityCode,version
-0,1,1,64,7,45,13,18,38,0.29,0,0,0.00,0.00,linux-v2.6.12-rc2
-0,1,1,64,7,45,13,18,38,0.29,0,0,0.00,0.00,linux-v2.6.12
+

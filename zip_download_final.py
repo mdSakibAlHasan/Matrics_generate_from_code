@@ -14,8 +14,17 @@ def read_versions(file_path):
         return [line.strip() for line in file.readlines()]
 
 # Generate the correct download links for each version
+# def generate_download_links(versions):
+#     return [f"https://web.git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/snapshot/linux-{version}.tar.gz" for version in versions]
+
 def generate_download_links(versions):
-    return [f"https://web.git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/snapshot/linux-{version}.tar.gz" for version in versions]
+    links = []
+    for version in versions:
+        version_num = version.replace('v', '')  # remove the 'v' prefix
+        major = version_num.split('.')[0]
+        links.append(f"https://cdn.kernel.org/pub/linux/kernel/v{major}.x/linux-{version_num}.tar.xz")
+    return links
+
 
 # Function to download the file with progress bar and retry logic
 def download_file(url, dest_path, max_retries=5, timeout=30):
@@ -54,7 +63,7 @@ def download_file(url, dest_path, max_retries=5, timeout=30):
 def main():
     versions = read_versions(file_path)
     download_links = generate_download_links(versions)
-    download_directory = r'D:\mahir\product specific exploit prediction\Script for zip\script for Linux zip\linux_zip_files'
+    download_directory = r'D:/mahir/product specific exploit prediction/Script for zip/script for Linux zip/linux_zip_files'
     os.makedirs(download_directory, exist_ok=True)
     
     for link in tqdm(download_links, desc="Downloading zip files"):
